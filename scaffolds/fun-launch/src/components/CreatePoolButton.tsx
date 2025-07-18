@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export function CreatePoolButton() {
   const { connection } = useConnection();
-  const { publicKey, signTransaction, sendTransaction } = useWallet();
+  const { publicKey, signTransaction } = useWallet(); // ✅ removed sendTransaction
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -22,8 +22,7 @@ export function CreatePoolButton() {
       setLoading(true);
       setStatus("Uploading metadata & creating transaction...");
 
-      // ✅ Replace with real inputs
-      const tokenLogoBase64 = "data:image/png;base64,...."; // TODO: Pick from file input
+      const tokenLogoBase64 = "data:image/png;base64,...."; // Replace with uploaded logo
       const tokenName = "MyToken";
       const tokenSymbol = "MYT";
       const mintAddress = "YOUR_MINT_PUBKEY_HERE";
@@ -41,9 +40,7 @@ export function CreatePoolButton() {
       });
 
       const data = await res.json();
-      if (!data.success) {
-        throw new Error(data.error || "Failed to create pool");
-      }
+      if (!data.success) throw new Error(data.error || "Failed to create pool");
 
       setStatus("Signing pool transaction...");
       const tx = Transaction.from(Buffer.from(data.poolTx, "base64"));
@@ -51,8 +48,8 @@ export function CreatePoolButton() {
 
       setStatus("Sending transaction...");
       const sig = await connection.sendRawTransaction(signedTx.serialize());
-
       await connection.confirmTransaction(sig, "confirmed");
+
       setStatus(`✅ Pool launched successfully! Tx: ${sig}`);
     } catch (err: any) {
       console.error(err);
@@ -72,11 +69,7 @@ export function CreatePoolButton() {
         {loading ? "Launching..." : "🚀 Launch Pool"}
       </Button>
 
-      {status && (
-        <p className="text-sm text-center text-gray-200">
-          {status}
-        </p>
-      )}
+      {status && <p className="text-sm text-center text-gray-200">{status}</p>}
     </div>
   );
 }
