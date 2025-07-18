@@ -1,18 +1,16 @@
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 type CreatePoolButtonProps = {
-  className?: string;
+  href?: string;
 };
 
-export const CreatePoolButton = ({ className }: CreatePoolButtonProps) => {
+export function CreatePoolButton({ href = "/create-pool" }: CreatePoolButtonProps) {
   return (
-    <Button>
-      <Link href="/create-pool" className="flex items-center gap-1">
-        <span className="iconify ph--rocket-bold w-4 h-4" />
-        <span>Create Pool</span>
-      </Link>
-    </Button>
+    <Link href={href}>
+      <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+        Create Pool
+      </Button>
+    </Link>
   );
-};
+}
